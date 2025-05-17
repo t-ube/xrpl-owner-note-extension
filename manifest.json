@@ -1,0 +1,58 @@
+{
+  "manifest_version": 3,
+  "name": "Owner Note",
+  "version": "1.0",
+  "description": "Replaces XRPL addresses with usernames based on a CSV mapping.",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://owner-note.shirome.net/"],
+      "js": ["loader-owner-note.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://xrp.cafe/*","https://xmart.art/*",
+      "https://bidds.com/*","https://xrpnft.com/*",
+      "https://bithomp.com/*","https://livenet.xrpl.org/*"],
+      "js": ["loader-cafe.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "loader-owner-note.js",
+        "loader-cafe.js",
+        "inject-collect-owner-note-data.js",
+        "inject-replace-addresses.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "default_locale": "en"
+}

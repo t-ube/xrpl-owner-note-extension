@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>__MSG_extension_name__</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 16px;
+        width: 250px;
+      }
+      input[type="file"] {
+        margin-top: 8px;
+      }
+      .logo-header {
+        text-align: center;
+        margin-bottom: 16px;
+      }
+      .logo-header img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+      }
+      #status {
+        margin-top: 12px;
+        color: green;
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .button-group button {
+        width: 100%;
+        margin-bottom: 8px;
+        padding: 8px;
+        border: none;
+        border-radius: 4px;
+        background-color: #eee;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+      .button-group button:hover {
+        background-color: #ddd;
+      }
+      .rich-list {
+        list-style: none;
+        padding-left: 0;
+      }
+      .rich-list li {
+        padding: 8px;
+        margin-bottom: 10px;
+        background: #f9f9f9;
+        border-radius: 6px;
+      }
+      .name {
+        font-weight: bold;
+        color: #333;
+      }
+      .xaccount, .address {
+        font-family: monospace;
+        font-size: 13px;
+        color: #555;
+        cursor: pointer;
+      }
+      .xaccount:hover, .address:hover {
+        text-decoration: underline;
+        color: #000;
+      }
+      .address-list {
+        list-style: none;
+        margin: 0;
+        padding-left: 6px;
+        margin-top: 2px;
+      }
+      .address-list .address {
+        font-family: monospace;
+        font-size: 13px;
+        line-height: 0.8;
+        color: #555;
+        cursor: pointer;
+        margin: 0;
+      }
+      .address-list .address:hover {
+        text-decoration: underline;
+        color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo-header">
+      <img src="images/owner_note_logo.png" alt="OwnerNote Logo" />
+    </div>
+    <div class="button-group">
+      <button id="openOwnerNote" data-msg="open_owner_note"></button>
+      <button id="importFromOwnerNote" data-msg="import_owner_note"></button>
+      <button id="clearData" data-msg="clear_data"></button>
+      <button id="replaceAddressesBtn">アドレスを置き換え</button>
+    </div>
+    <div id="status"></div>
+    <hr />
+    <h4 data-msg="registered_list"></h4>
+    <input type="text" id="searchInput" data-placeholder="search_placeholder" placeholder="" style="width:100%; margin-bottom:10px; padding:6px;" />
+    <div id="entryCount" style="margin: 8px 0; font-weight: bold;"></div>
+    <ul id="addressList" class="rich-list"></ul>
+    <script src="popup.js"></script>
+  </body>
+</html>

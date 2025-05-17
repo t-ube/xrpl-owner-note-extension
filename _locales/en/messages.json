@@ -1,0 +1,44 @@
+{
+  "extension_name": {
+    "message": "Owner Note"
+  },
+  "upload_owner_list": {
+    "message": "📄 Upload Owner List"
+  },
+  "registered_list": {
+    "message": "📋 Registered List"
+  },
+  "open_owner_note": {
+    "message": "Open OwnerNote"
+  },
+  "import_owner_note": {
+    "message": "Import from Owner Note"
+  },
+  "clear_data": {
+    "message": "Clear Data"
+  },
+  "upload_success": {
+    "message": "Upload successful!"
+  },
+  "entry_count": {
+    "message": "Total entries: $1"
+  },
+  "search_result_count": {
+    "message": "Search results: $1"
+  },
+  "no_data": {
+    "message": "No data"
+  },
+  "confirm_clear_data": {
+    "message": "Are you sure you want to delete all stored data?"
+  },
+  "clear_success": {
+    "message": "Data has been cleared"
+  },
+  "please_open_ownernote": {
+    "message": "Please open the OwnerNote page first"
+  },
+  "search_placeholder": {
+    "message": "Search (name, X Account, address)"
+  }
+}

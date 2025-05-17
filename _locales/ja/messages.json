@@ -1,0 +1,44 @@
+{
+  "extension_name": {
+    "message": "Owner Note"
+  },
+  "upload_owner_list": {
+    "message": "📄 オーナーリストをアップロード"
+  },
+  "registered_list": {
+    "message": "📋 登録済み一覧"
+  },
+  "open_owner_note": {
+    "message": "OwnerNoteを開く"
+  },
+  "import_owner_note": {
+    "message": "Owner Note からインポート"
+  },
+  "clear_data": {
+    "message": "データ消去"
+  },
+  "upload_success": {
+    "message": "アップロードに成功しました"
+  },
+  "entry_count": {
+    "message": "登録件数：$1 件"
+  },
+  "search_result_count": {
+    "message": "検索結果：$1 件"
+  },
+  "no_data": {
+    "message": "一致するデータがありません"
+  },
+  "confirm_clear_data": {
+    "message": "登録データをすべて削除します。よろしいですか？"
+  },
+  "clear_success": {
+    "message": "データを削除しました"
+  },
+  "please_open_ownernote": {
+    "message": "OwnerNoteのページを開いてから実行してください。"
+  },
+  "search_placeholder": {
+    "message": "検索（名前・Xアカウント・アドレス）"
+  }
+}
