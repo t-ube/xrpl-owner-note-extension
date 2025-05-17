@@ -1,3 +1,5 @@
+console.log('[inject] script loaded');
+
 function getUserMap() {
   return new Promise((resolve) => {
     window.addEventListener('message', function handler(event) {
@@ -58,6 +60,8 @@ function showUserInfoPanel(name, xAccount, address) {
 }
 
 (async () => {
+  console.log('ASYNC');
+
   const userMap = await getUserMap();
   console.log('取得したアドレスマップ:', userMap);
 
@@ -80,8 +84,9 @@ function showUserInfoPanel(name, xAccount, address) {
   }
 
   // テキストノードを走査して置き換え
-  function replaceAddressesInTextNodes(addressToUser) {
-    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  function replaceAddressesInTextNodes(addressToUser, root = document.body) {
+    //const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
 
     while (walker.nextNode()) {
       const node = walker.currentNode;
@@ -105,12 +110,13 @@ function showUserInfoPanel(name, xAccount, address) {
     }
   }
 
-  function replaceHyperlinkTextWithUserInfo(addressToUser) {
+  function replaceHyperlinkTextWithUserInfo(addressToUser, root = document.body) {
     console.log('replaceHyperlinkTextWithUserInfo');
     console.log(addressToUser);
 
     const profileLinkRegex = /\/(user|profile|account|accounts)\/(r[1-9A-HJ-NP-Za-km-z]{25,35})(\/|$)/;
-    const links = document.querySelectorAll('a');
+    //const links = document.querySelectorAll('a');
+    const links = root.querySelectorAll('a');
     console.log(links);
   
     links.forEach(link => {
@@ -151,14 +157,34 @@ function showUserInfoPanel(name, xAccount, address) {
     });
   }
 
-  // DOMが完全に読み込まれてから実行
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      replaceAddressesInTextNodes(addressToUser);
-      replaceHyperlinkTextWithUserInfo(addressToUser);
-    });
-  } else {
+  replaceAddressesInTextNodes(addressToUser);
+  replaceHyperlinkTextWithUserInfo(addressToUser);
+
+  setTimeout(() => {
+    console.log('TIMEOUT');
     replaceAddressesInTextNodes(addressToUser);
     replaceHyperlinkTextWithUserInfo(addressToUser);
+  }, 300);
+  
+  if (!window.__addressObserver__) {
+    const observer = new MutationObserver((mutationsList) => {
+      for (const mutation of mutationsList) {
+        for (const node of mutation.addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            replaceAddressesInTextNodes(addressToUser, node);
+            replaceHyperlinkTextWithUserInfo(addressToUser, node);
+          }
+        }
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    window.__addressObserver__ = observer;
   }
+
 })();
+
