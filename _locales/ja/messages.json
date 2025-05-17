@@ -40,5 +40,8 @@
   },
   "search_placeholder": {
     "message": "検索（名前・Xアカウント・アドレス）"
+  },
+  "replace_address": {
+    "message": "アドレスを置き換え"
   }
 }

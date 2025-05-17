@@ -59,7 +59,9 @@
         "loader-owner-note.js",
         "loader-cafe.js",
         "inject-collect-owner-note-data.js",
-        "inject-replace-addresses.js"
+        "inject-replace-addresses.js",
+        "icons/*",
+        "images/*"
       ],
       "matches": ["<all_urls>"]
     }
