@@ -30,18 +30,21 @@
     "message": "No data"
   },
   "confirm_clear_data": {
-    "message": "Are you sure you want to delete all stored data?"
+    "message": "Are you sure you want to clear the imported owner list?"
   },
   "clear_success": {
-    "message": "Data has been cleared"
+    "message": "Owner list has been cleared."
   },
   "please_open_ownernote": {
-    "message": "Please open the OwnerNote page first"
+    "message": "Please open the Owner Note page first"
   },
   "search_placeholder": {
     "message": "Search (name, X Account, address)"
   },
   "replace_address": {
     "message": "Replace address"
+  },
+  "import_success": {
+    "message": "Imported owner list successfully!"
   }
 }

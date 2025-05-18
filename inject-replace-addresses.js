@@ -19,6 +19,21 @@ if (!window.__ownerNoteInjected__) {
   function showHoverCard(user, address, x, y) {
     clearTimeout(hoverTimeout);
 
+    const cardWidth = 300;
+    const cardHeight = 120;
+    const padding = 12;
+
+    let left = x + padding;
+    let top = y + padding;
+
+    // ウィンドウの右端・下端にはみ出す場合は左・上にずらす
+    if (left + cardWidth > window.innerWidth) {
+      left = x - cardWidth - padding;
+    }
+    if (top + cardHeight > window.innerHeight) {
+      top = y - cardHeight - padding;
+    }
+
     let card = document.getElementById('hover-user-card');
     if (card) card.remove();
 
@@ -48,8 +63,8 @@ if (!window.__ownerNoteInjected__) {
     card.className = 'user-card';
     card.style.cssText = `
       position: fixed;
-      left: ${x + 12}px;
-      top: ${y + 12}px;
+      left: ${left}px;
+      top: ${top}px;
       background: white;
       border: 1px solid #ccc;
       box-shadow: 0 2px 10px rgba(0,0,0,0.15);
@@ -57,7 +72,7 @@ if (!window.__ownerNoteInjected__) {
       font-size: 14px;
       border-radius: 6px;
       z-index: 2147483647;
-      max-width: 300px;
+      max-width: 320px;
       pointer-events: auto;
     `;
 
@@ -78,8 +93,15 @@ if (!window.__ownerNoteInjected__) {
           ``
         }
       </div>
-      <div data-xrpl-address style="font-size:12px;color:#555;">
+      <div data-xrpl-address style="font-size:12px;color:#555; word-break:break-all; line-height:1.4;">
         ${address}${dualSVG(address)}
+        <a href="https://x.com/search?q=${encodeURIComponent(address)}" target="_blank" rel="noopener noreferrer"
+          style="margin-left:6px;vertical-align:middle;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 1200 1227"
+              style="vertical-align:middle; fill: black;">
+            <path d="M711.911 499.438L1144.71 0H1041.48L666.146 433.906L361.674 0H0L456.232 662.103L0 1227H103.238L503.68 763.25L825.354 1227H1187.03L711.911 499.438ZM555.73 699.907L512.768 638.384L143.04 80.289H314.567L601.749 494.452L644.711 555.975L1029.33 1115.54H857.803L555.73 699.907Z"/>
+          </svg>
+        </a>
       </div>
     `;
 

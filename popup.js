@@ -37,20 +37,39 @@ document.getElementById('importFromOwnerNote').addEventListener('click', async (
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'STORAGE_UPDATED_FROM_OWNERNOTE') {
+    const importMsg = chrome.i18n.getMessage("import_success") || "Owner list has been imported.";
+    document.getElementById('status').textContent = importMsg;
+    setTimeout(() => {
+      document.getElementById('status').textContent = '';
+    }, 3000);
     loadUserMap();
   }
 });
 
 document.getElementById('clearData')?.addEventListener('click', () => {
+  if (!Object.keys(addressMapData).length) {
+    const msg = chrome.i18n.getMessage("nothing_to_clear") || "There is no data to clear.";
+    document.getElementById('status').textContent = msg;
+    setTimeout(() => {
+      document.getElementById('status').textContent = '';
+    }, 3000);
+    return;
+  }
+
   const confirmMsg = chrome.i18n.getMessage("confirm_clear_data") || "Are you sure you want to delete all stored data?";
   if (confirm(confirmMsg)) {
     chrome.storage.local.remove('userMap', () => {
       const clearMsg = chrome.i18n.getMessage("clear_success") || "Data has been cleared.";
       document.getElementById('status').textContent = clearMsg;
+      setTimeout(() => {
+        document.getElementById('status').textContent = '';
+      }, 3000);
+
       loadUserMap();
     });
   }
 });
+
 
 let addressMapData = {};
 let searchKeyword = '';
@@ -77,8 +96,18 @@ function showCopiedMessage(targetElement) {
 }
 
 function loadUserMap() {
-  chrome.storage.local.get('userMap', (data) => {
+  chrome.storage.local.get('userMap', async (data) => {
     addressMapData = data.userMap || {};
+    const hasData = Object.keys(addressMapData).length > 0;
+
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const isOnOwnerNote = tab?.url?.includes("owner-note.shirome.net");
+
+    document.getElementById('clearData').style.display = hasData ? 'block' : 'none';
+    document.getElementById('replaceAddressesBtn').style.display = hasData ? 'block' : 'none';
+    document.getElementById('importFromOwnerNote').style.display =
+      hasData || isOnOwnerNote ? 'block' : 'none';
+
     renderUserList();
   });
 }

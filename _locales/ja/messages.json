@@ -30,10 +30,10 @@
     "message": "一致するデータがありません"
   },
   "confirm_clear_data": {
-    "message": "登録データをすべて削除します。よろしいですか？"
+    "message": "インポートしたオーナーリストをすべて消去します。よろしいですか？"
   },
   "clear_success": {
-    "message": "データを削除しました"
+    "message": "オーナーリストを消去しました。"
   },
   "please_open_ownernote": {
     "message": "OwnerNoteのページを開いてから実行してください。"
@@ -43,5 +43,8 @@
   },
   "replace_address": {
     "message": "アドレスを置き換え"
+  },
+  "import_success": {
+    "message": "オーナーリストをインポートしました。"
   }
 }
