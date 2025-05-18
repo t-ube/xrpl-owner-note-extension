@@ -1,8 +1,6 @@
 if (!window.__ownerNoteInjected__) {
   window.__ownerNoteInjected__ = true;
 
-  console.log('[inject] script loaded');
-
   function getUserMap() {
     return new Promise((resolve) => {
       window.addEventListener('message', function handler(event) {
@@ -27,7 +25,6 @@ if (!window.__ownerNoteInjected__) {
     const name = user?.name || 'Unknown';
     const xAccount = user?.xAccount || '-';
 
-    // アイコンテンプレート：2つのSVGを重ねて表示切替
     const dualSVG = (value) => `
       <span class="copy-container" style="display:inline-block;margin-left:6px;">
         <svg class="copy-btn" data-copy="${value}" xmlns="http://www.w3.org/2000/svg"
@@ -120,7 +117,6 @@ if (!window.__ownerNoteInjected__) {
 
   (async () => {
     const userMap = await getUserMap();
-    console.log('取得したアドレスマップ:', userMap);
 
     if (!Object.keys(userMap).length) return;
 
@@ -136,7 +132,6 @@ if (!window.__ownerNoteInjected__) {
     }
 
     if (!Object.keys(addressToUser).length) {
-      console.warn("addressToUser が空です");
       return;
     }
 

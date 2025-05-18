@@ -23,10 +23,10 @@ window.addEventListener('message', async (event) => {
             chrome.runtime.sendMessage({ type: 'STORAGE_UPDATED_FROM_OWNERNOTE' });
           });
         } else {
-          console.warn("拡張機能のストレージにアクセスできません（コンテキスト無効）");
+          console.warn("Cannot access extension storage (invalid context)");
         }
       } catch (err) {
-        console.error("ユーザーデータの処理中にエラーが発生:", err);
+        console.error("An error occurred while processing user data:", err);
       }
       break;
 
@@ -43,7 +43,6 @@ window.addEventListener('message', async (event) => {
       break;
 
     default:
-      // 他のメッセージ種別は無視
       break;
   }
 });
