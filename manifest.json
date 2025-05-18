@@ -2,10 +2,7 @@
   "manifest_version": 3,
   "name": "Owner Note",
   "version": "1.0",
-  "description": "Replaces XRPL addresses with usernames based on a CSV mapping.",
-  "background": {
-    "service_worker": "background.js"
-  },
+  "description": "Automatically replaces XRPL wallet addresses on supported sites with names from your imported list.",
   "permissions": [
     "activeTab",
     "scripting",
