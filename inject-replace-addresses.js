@@ -268,24 +268,26 @@ if (!window.__ownerNoteInjected__) {
       replaceAddressLinksWithUserInfo(addressToUser);
     }, 300);
 
-    if (!window.__addressObserver__) {
-      const observer = new MutationObserver((mutationsList) => {
-        for (const mutation of mutationsList) {
-          for (const node of mutation.addedNodes) {
-            if (node.nodeType === Node.ELEMENT_NODE && !node.closest('[data-xrpl-address]')) {
-              replaceAddressesInTextNodes(addressToUser, node);
-              replaceAddressLinksWithUserInfo(addressToUser, node);
-            }
+    if (window.__addressObserver__) {
+      window.__addressObserver__.disconnect();
+    }
+    
+    const observer = new MutationObserver((mutationsList) => {
+      for (const mutation of mutationsList) {
+        for (const node of mutation.addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE && !node.closest('[data-xrpl-address]')) {
+            replaceAddressesInTextNodes(addressToUser, node);
+            replaceAddressLinksWithUserInfo(addressToUser, node);
           }
         }
-      });
+      }
+    });
     
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true
-      });
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
     
-      window.__addressObserver__ = observer;
-    }
+    window.__addressObserver__ = observer;
   })();
 }
