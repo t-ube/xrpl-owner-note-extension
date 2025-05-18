@@ -255,7 +255,7 @@ function renderUserList() {
       <div class="xaccount">@${xAccount}${dualSVG('@' + xAccount + ' ')}
         ${xAccount ? 
           `<a href="https://x.com/${xAccount}" target="_blank" rel="noopener noreferrer"
-            style="margin-left:6px;vertical-align:middle;">
+            class="x-icon" style="margin-left:6px;vertical-align:middle;">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 1200 1227"
                 style="vertical-align:middle; fill: black;">
               <path d="M711.911 499.438L1144.71 0H1041.48L666.146 433.906L361.674 0H0L456.232 662.103L0 1227H103.238L503.68 763.25L825.354 1227H1187.03L711.911 499.438ZM555.73 699.907L512.768 638.384L143.04 80.289H314.567L601.749 494.452L644.711 555.975L1029.33 1115.54H857.803L555.73 699.907Z"/>
