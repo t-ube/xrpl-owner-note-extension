@@ -104,7 +104,6 @@ function loadUserMap() {
     const isOnOwnerNote = tab?.url?.includes("owner-note.shirome.net");
 
     document.getElementById('clearData').style.display = hasData ? 'block' : 'none';
-    document.getElementById('replaceAddressesBtn').style.display = hasData ? 'block' : 'none';
     document.getElementById('importFromOwnerNote').style.display =
       hasData || isOnOwnerNote ? 'block' : 'none';
 
@@ -208,14 +207,3 @@ function renderUserList() {
     list.appendChild(li);
   }
 }
-
-document.getElementById('replaceAddressesBtn').addEventListener('click', async () => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-  if (tab?.id) {
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ['inject-replace-addresses.js']
-    });
-  }
-});
