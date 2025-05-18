@@ -9,7 +9,8 @@ window.addEventListener('message', async (event) => {
 
         for (const group of event.data.addressGroups || []) {
           const name = group.name || "Unknown";
-          const xAccount = group.xAccount || "";
+          const rawXAccount = group.xAccount || "";
+          const xAccount = rawXAccount.startsWith('@') ? rawXAccount.slice(1) : rawXAccount;
           const addresses = Array.isArray(group.addresses) ? group.addresses : [];
 
           const id = `user_${String(counter).padStart(4, '0')}`;

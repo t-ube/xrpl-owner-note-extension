@@ -9,13 +9,13 @@
     "message": "📋 登録済み一覧"
   },
   "open_owner_note": {
-    "message": "OwnerNoteを開く"
+    "message": "Owner Note を開く"
   },
   "import_owner_note": {
-    "message": "Owner Note からインポート"
+    "message": "オーナーリストをインポート"
   },
   "clear_data": {
-    "message": "データ消去"
+    "message": "オーナーリストを消去"
   },
   "upload_success": {
     "message": "アップロードに成功しました"

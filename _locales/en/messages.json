@@ -9,13 +9,13 @@
     "message": "📋 Registered List"
   },
   "open_owner_note": {
-    "message": "Open OwnerNote"
+    "message": "Open Owner Note"
   },
   "import_owner_note": {
-    "message": "Import from Owner Note"
+    "message": "Import Owner List"
   },
   "clear_data": {
-    "message": "Clear Data"
+    "message": "Clear Owner List"
   },
   "upload_success": {
     "message": "Upload successful!"
