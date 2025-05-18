@@ -57,11 +57,14 @@
         "loader-cafe.js",
         "inject-collect-owner-note-data.js",
         "inject-replace-addresses.js",
-        "icons/*",
-        "images/*"
+        "icons/icon16.png",
+        "icons/icon48.png",
+        "icons/icon128.png",
+        "images/brand-logo.png"
       ],
       "matches": ["<all_urls>"]
     }
   ],
+  "homepage_url": "https://docs.google.com/forms/d/e/1FAIpQLSeDNjOV7YZ_thLmtxFvwBZR6GkUPUy22y0uWTT0cs_WPu5a9Q/viewform?usp=sharing&ouid=116961272523763200205",
   "default_locale": "en"
 }
