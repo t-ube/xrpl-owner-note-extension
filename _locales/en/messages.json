@@ -54,9 +54,9 @@
     "message": "Replacement is not performed on this page."
   },
   "import_required_notice": {
-    "message": "Please open Owner Note and import your owner list."
+    "message": "Please open Owner Note. The owner data will be synced automatically."
   },
   "import_required_notice2": {
-    "message": "Please import your owner list."
+    "message": "Please add at least one owner."
   }
 }

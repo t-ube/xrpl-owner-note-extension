@@ -54,9 +54,9 @@
     "message": "このページでは置き換えは行われません。"
   },
   "import_required_notice": {
-    "message": "Owner Noteを開き、オーナーリストをインポートしてください。"
+    "message": "Owner Noteを開いてください。オーナー情報を自動的に同期します。"
   },
   "import_required_notice2": {
-    "message": "オーナーリストをインポートしてください。"
+    "message": "オーナーを追加してください。"
   }
 }

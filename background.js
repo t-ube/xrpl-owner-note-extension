@@ -1,7 +1,5 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'OWNERNOTE_UPDATED') {
-    console.log('[background] OWNERNOTE_UPDATED received');
-
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0]?.id) {
         chrome.scripting.executeScript({

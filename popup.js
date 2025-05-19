@@ -4,25 +4,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   const toggle = document.getElementById('toggleReplaceSwitch');
   const openBtn = document.getElementById('openOwnerNote');
-  const importBtn = document.getElementById('importFromOwnerNote');
-  const notice = document.getElementById('pageNotice');
 
-  const isOwnerNote = tab?.url?.includes("owner-note.shirome.net") || tab?.url?.includes("nft-owner-note.pages.dev");
+  const isOwnerNote = tab?.url?.includes("owner-note.shirome.net");
 
   if (isOwnerNote) {
     openBtn.disabled = true;
-    importBtn.disabled = false;
-    notice.style.display = 'block';
   } else {
     openBtn.disabled = false;
-    importBtn.disabled = true;
-    notice.style.display = 'none';
-    importBtn.title = chrome.i18n.getMessage("please_open_ownernote") || "Please open the OwnerNote page.";
   }
 
   chrome.tabs.sendMessage(tab.id, { type: 'GET_REPLACE_STATE' }, (response) => {
     if (chrome.runtime.lastError) {
-      console.warn("Could not get replace state:", chrome.runtime.lastError.message);
       return;
     }
     toggle.checked = !!response?.isReplaced;
@@ -39,19 +31,6 @@ document.querySelectorAll('[data-placeholder]').forEach(el => {
   el.placeholder = chrome.i18n.getMessage(key);
 });
 
-document.getElementById('importFromOwnerNote').addEventListener('click', async () => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-  if (tab.url.includes("owner-note.shirome.net") || tab.url.includes("nft-owner-note.pages.dev")) {
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ["inject-collect-owner-note-data.js"]
-    });
-  } else {
-    alert(chrome.i18n.getMessage("please_open_ownernote") || "Please open the OwnerNote page first.");
-  }
-});
-
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'STORAGE_UPDATED_FROM_OWNERNOTE') {
     const importMsg = chrome.i18n.getMessage("import_success") || "Owner list has been imported.";
@@ -62,31 +41,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     loadUserMap();
   }
 });
-
-document.getElementById('clearData')?.addEventListener('click', () => {
-  if (!Object.keys(addressMapData).length) {
-    const msg = chrome.i18n.getMessage("nothing_to_clear") || "There is no data to clear.";
-    document.getElementById('status').textContent = msg;
-    setTimeout(() => {
-      document.getElementById('status').textContent = '';
-    }, 3000);
-    return;
-  }
-
-  const confirmMsg = chrome.i18n.getMessage("confirm_clear_data") || "Are you sure you want to delete all stored data?";
-  if (confirm(confirmMsg)) {
-    chrome.storage.local.remove('userMap', () => {
-      const clearMsg = chrome.i18n.getMessage("clear_success") || "Data has been cleared.";
-      document.getElementById('status').textContent = clearMsg;
-      setTimeout(() => {
-        document.getElementById('status').textContent = '';
-      }, 3000);
-
-      loadUserMap();
-    });
-  }
-});
-
 
 let addressMapData = {};
 let searchKeyword = '';
@@ -133,9 +87,6 @@ function loadUserMap() {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     const isOnOwnerNote = tab?.url?.includes("owner-note.shirome.net");
 
-    document.getElementById('clearData').style.display = hasData ? 'block' : 'none';
-    //document.getElementById('importFromOwnerNote').style.display =
-    //  hasData || isOnOwnerNote ? 'block' : 'none';
     document.getElementById('toggleWrapper').style.display =
       hasData ? 'flex' : 'none';
     document.getElementById('pageNotice').style.display =
@@ -145,6 +96,8 @@ function loadUserMap() {
     importNotice.style.display = !hasData && !isOnOwnerNote ? 'block' : 'none';
     const importNotice2 = document.getElementById('importNotice2');
     importNotice2.style.display = !hasData && isOnOwnerNote ? 'block' : 'none';
+    const pageNotice = document.getElementById('pageNotice');
+    pageNotice.style.display = isOnOwnerNote ? 'block' : 'none';
 
     document.getElementById('addressListWrapper').style.display =
       hasData ? 'block' : 'none';

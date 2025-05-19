@@ -26,15 +26,13 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://owner-note.shirome.net/",
-                  "https://896a98f5.nft-owner-note.pages.dev/*"
-                ],
-      "js": ["loader-owner-note.js"],
+      "matches": ["<all_urls>"],
+      "js": ["content.js", "loader-cafe.js"],
       "run_at": "document_idle"
     },
     {
-      "matches": ["<all_urls>"],
-      "js": ["content.js", "loader-cafe.js"],
+      "matches": ["https://owner-note.shirome.net/*"],
+      "js": ["loader-owner-note.js"],
       "run_at": "document_idle"
     }
   ],

@@ -1,5 +1,3 @@
-console.log("[OwnerNote] content.js loaded");
-
 let __ownerNoteIsReplaced = false;
 
 chrome.storage.local.get('replaceState', (result) => {
@@ -100,7 +98,6 @@ window.addEventListener('message', async (event) => {
       break;
 
     case 'OWNERNOTE_UPDATED':
-      console.log('OWNERNOTE_UPDATED');
       window.postMessage({ type: 'REQUEST_USER_MAP' }, '*');
       break;
 

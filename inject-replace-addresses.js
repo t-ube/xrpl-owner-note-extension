@@ -162,6 +162,7 @@
       const addressToUser = {};
       for (const userId in userMap) {
         const user = userMap[userId];
+        if (!user || !Array.isArray(user.addresses)) continue;
         for (const address of user.addresses) {
           addressToUser[address] = {
             name: user.name,
