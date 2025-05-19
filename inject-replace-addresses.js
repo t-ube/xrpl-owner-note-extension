@@ -184,6 +184,7 @@ if (!window.__ownerNoteInjected__) {
       nodesToReplace.forEach(node => {
         const parent = node.parentNode;
         if (!parent) return;
+
         const frag = document.createDocumentFragment();
         const parts = node.nodeValue.split(xrplAddressRegex);
         const matches = [...node.nodeValue.matchAll(xrplAddressRegex)];
@@ -194,12 +195,15 @@ if (!window.__ownerNoteInjected__) {
           if (match) {
             const address = match[0];
             const user = addressToUser[address];
+            const displayName = user?.name || address;
             const span = document.createElement('span');
-            span.textContent = address; // 初期表示はアドレス
+            span.textContent = displayName;
             span.setAttribute('data-xrpl-address', address);
             span.setAttribute('data-original-address', address);
             span.setAttribute('data-name', user?.name || address);
             span.setAttribute('data-original-text', address);
+            span.setAttribute('data-xrpl-original-text', 'true');
+            span.setAttribute('data-original-content', node.nodeValue);
             span.style.textDecoration = 'underline dotted';
             span.style.cursor = 'pointer';
             span.addEventListener('mouseenter', e => showHoverCard(user, address, e.clientX, e.clientY));
@@ -225,31 +229,61 @@ if (!window.__ownerNoteInjected__) {
         const user = addressToUser[address];
         const displayName = user?.name || address;
         const originalText = link.textContent.trim();
-        link.innerHTML = '';
-        const span = document.createElement('span');
-        span.textContent = address; // 初期表示はアドレス
-        span.style.textDecoration = 'underline dotted';
-        span.style.cursor = 'pointer';
-        span.setAttribute('data-xrpl-address', address);
-        span.setAttribute('data-original-address', address);
-        span.setAttribute('data-name', displayName);
-        span.setAttribute('data-original-text', originalText);
-        span.addEventListener('mouseenter', e => showHoverCard(user, address, e.clientX, e.clientY));
-        span.addEventListener('mouseleave', () => {
-          hoverTimeout = setTimeout(hideHoverCard, 100);
-        });
-        link.appendChild(span);
+        const originalHTML = link.outerHTML;
+        if (user?.name) {
+          const span = document.createElement('span');
+          span.textContent = displayName;
+          span.style.textDecoration = 'underline dotted';
+          span.style.cursor = 'pointer';
+          span.setAttribute('data-xrpl-address', address);
+          span.setAttribute('data-original-address', address);
+          span.setAttribute('data-name', displayName);
+          span.setAttribute('data-original-text', originalText);
+          span.setAttribute('data-xrpl-original-link', 'true');
+          span.setAttribute('data-original-content', originalHTML);
+          span.addEventListener('mouseenter', e => showHoverCard(user, address, e.clientX, e.clientY));
+          span.addEventListener('mouseleave', () => {
+            hoverTimeout = setTimeout(hideHoverCard, 100);
+          });
+          link.replaceWith(span);
+        } else {
+          link.style.textDecoration = 'underline dotted';
+          link.style.cursor = 'pointer';
+          link.setAttribute('data-xrpl-address', address);
+          link.setAttribute('data-name', displayName);
+          link.setAttribute('data-original-address', address);
+          link.setAttribute('data-xrpl-original-link', 'true');
+          link.setAttribute('data-original-content', originalHTML);
+          link.addEventListener('mouseenter', e => showHoverCard(user, address, e.clientX, e.clientY));
+          link.addEventListener('mouseleave', () => {
+            hoverTimeout = setTimeout(hideHoverCard, 100);
+          });
+        }
       });
     }
   
     function applyReplaceState(enabled) {
-      const spans = document.querySelectorAll('[data-xrpl-address]');
-      spans.forEach(span => {
-        const text = enabled
-          ? span.getAttribute('data-name')
-          : span.getAttribute('data-original-text');
-        if (text) span.textContent = text;
-      });
+      if (enabled) {
+        replaceAddressesInTextNodes();
+        replaceAddressLinksWithUserInfo();
+      } else {
+        document.querySelectorAll('[data-xrpl-original-text]').forEach(span => {
+          const originalText = span.getAttribute('data-original-content');
+          if (originalText) {
+            const textNode = document.createTextNode(originalText);
+            span.replaceWith(textNode);
+          }
+        });
+        document.querySelectorAll('[data-xrpl-original-link]').forEach(span => {
+          const originalHTML = span.getAttribute('data-original-content');
+          if (originalHTML) {
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = originalHTML;
+            const restored = wrapper.firstElementChild;
+            if (restored) span.replaceWith(restored);
+          }
+        });
+      }
     }
   
     replaceAddressesInTextNodes();
