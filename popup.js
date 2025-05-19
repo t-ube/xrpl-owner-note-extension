@@ -160,6 +160,12 @@ function renderUserList() {
 
   const entries = Object.entries(addressMapData); // { user_0001: { name, xAccount, addresses[] } }
 
+  entries.sort(([, a], [, b]) => {
+    const nameA = (a.name || '').toLowerCase();
+    const nameB = (b.name || '').toLowerCase();
+    return nameA.localeCompare(nameB);
+  });
+  
   const filteredEntries = entries.filter(([id, { name, xAccount, addresses }]) => {
     const lower = searchKeyword;
     return (
