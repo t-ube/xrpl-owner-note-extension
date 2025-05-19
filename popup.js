@@ -12,13 +12,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (isOwnerNote) {
     openBtn.disabled = true;
     importBtn.disabled = false;
-    toggle.disabled = true;
-    toggle.checked = false;
     notice.style.display = 'block';
   } else {
     openBtn.disabled = false;
     importBtn.disabled = true;
-    toggle.disabled = false;
     notice.style.display = 'none';
     importBtn.title = chrome.i18n.getMessage("please_open_ownernote") || "Please open the OwnerNote page.";
   }
