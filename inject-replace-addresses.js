@@ -224,23 +224,57 @@
       }
     
       function replaceAddressLinksWithUserInfo(root = document.body) {
-        const profileLinkRegex = /\/(user|profile|account|accounts)\/(r[1-9A-HJ-NP-Za-km-z]{25,35})(\/|$)/;
+        const profileLinkRegex = /\/(user|profile|account|accounts|explorer)\/(r[1-9A-HJ-NP-Za-km-z]{25,35})(\/|$)/;
+        const xrplAddressRegex = /^r[1-9A-HJ-NP-Za-km-z]{25,35}$/;
         const links = root.querySelectorAll('a');
         links.forEach(link => {
           if (link.querySelector('[data-xrpl-address]')) return;
+          if (link.hasAttribute('data-xrpl-address')) return;
+
+          const linkText = link.textContent.trim();
+          const hasComplexContent = [...link.childNodes].some(n => n.nodeType !== Node.TEXT_NODE);
+          
+          let address = null;
           const match = link.href?.match(profileLinkRegex);
-          if (!match) return;
-          const address = match[2];
-          if (!address || link.hasAttribute('data-xrpl-address')) return;
+          if (match) {
+            address = match[2];
+          } else if (xrplAddressRegex.test(linkText)) {
+            address = linkText;
+          }
+          if (!address) return;
+          
           const user = addressToUser[address];
+
+          let hasAddressFragment = false;
+          if (hasComplexContent) {
+            const plainText = link.textContent.trim();
+            const parts = plainText.split(/[\s,、，、。・\/\\|]+/);
+            hasAddressFragment = parts.some(part =>
+              part.startsWith('r') && (
+                part.length >= 5 ||
+                part.includes('...')
+              )
+            );
+            if (!hasAddressFragment) return;
+          }
+          
           const displayName = user?.name || address;
           const originalText = link.textContent.trim();
           const originalHTML = link.outerHTML;
+
+          const isEllipsis = originalText.startsWith('r') && originalText.includes('...');
+          const isLikelyAddressDisplay = 
+            linkText === address || 
+            linkText === displayName || 
+            hasAddressFragment ||
+            (isEllipsis && displayName !== originalText);
+          if (!isLikelyAddressDisplay) return;
+
           if (user?.name) {
             const a = document.createElement('a');
             a.textContent = displayName;
             a.href = link.href;
-
+            a.className = link.className;
             const target = link.getAttribute('target');
             if (target) {
               a.setAttribute('target', target);

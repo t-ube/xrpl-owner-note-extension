@@ -51,7 +51,7 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
 });
 
 document.getElementById('openOwnerNote').addEventListener('click', () => {
-  chrome.tabs.create({ url: "https://owner-note.shirome.net/" });
+  chrome.tabs.create({ url: "https://owner-note.shirome.net/owners/" });
 });
 
 document.getElementById('toggleReplaceSwitch').addEventListener('change', async (e) => {
