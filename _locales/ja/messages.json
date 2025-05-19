@@ -46,5 +46,17 @@
   },
   "import_success": {
     "message": "オーナーリストをインポートしました。"
+  },
+  "toggle_replace_label": {
+    "message": "アドレスを名前に置き換える"
+  },
+  "replace_notice_owner_note": {
+    "message": "このページでは置き換えは行われません。"
+  },
+  "import_required_notice": {
+    "message": "Owner Noteを開き、オーナーリストをインポートしてください。"
+  },
+  "import_required_notice2": {
+    "message": "オーナーリストをインポートしてください。"
   }
 }

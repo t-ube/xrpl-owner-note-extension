@@ -3,7 +3,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   const toggle = document.getElementById('toggleReplaceSwitch');
+  const openBtn = document.getElementById('openOwnerNote');
   const importBtn = document.getElementById('importFromOwnerNote');
+  const notice = document.getElementById('pageNotice');
+
+  const isOwnerNote = tab?.url?.includes("owner-note.shirome.net");
+
+  if (isOwnerNote) {
+    openBtn.disabled = true;
+    importBtn.disabled = false;
+    toggle.disabled = true;
+    toggle.checked = false;
+    notice.style.display = 'block';
+  } else {
+    openBtn.disabled = false;
+    importBtn.disabled = true;
+    toggle.disabled = false;
+    notice.style.display = 'none';
+    importBtn.title = chrome.i18n.getMessage("please_open_ownernote") || "Please open the OwnerNote page.";
+  }
 
   chrome.tabs.sendMessage(tab.id, { type: 'GET_REPLACE_STATE' }, (response) => {
     if (chrome.runtime.lastError) {
@@ -12,13 +30,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     toggle.checked = !!response?.isReplaced;
   });
-
-  if (tab?.url?.includes("owner-note.shirome.net")) {
-    importBtn.disabled = false;
-  } else {
-    importBtn.disabled = true;
-    importBtn.title = chrome.i18n.getMessage("please_open_ownernote") || "Please open the OwnerNote page.";
-  }
 });
 
 document.querySelectorAll('[data-msg]').forEach(el => {
@@ -126,8 +137,20 @@ function loadUserMap() {
     const isOnOwnerNote = tab?.url?.includes("owner-note.shirome.net");
 
     document.getElementById('clearData').style.display = hasData ? 'block' : 'none';
-    document.getElementById('importFromOwnerNote').style.display =
-      hasData || isOnOwnerNote ? 'block' : 'none';
+    //document.getElementById('importFromOwnerNote').style.display =
+    //  hasData || isOnOwnerNote ? 'block' : 'none';
+    document.getElementById('toggleWrapper').style.display =
+      hasData ? 'flex' : 'none';
+    document.getElementById('pageNotice').style.display =
+      hasData ? 'block' : 'none';
+
+    const importNotice = document.getElementById('importNotice');
+    importNotice.style.display = !hasData && !isOnOwnerNote ? 'block' : 'none';
+    const importNotice2 = document.getElementById('importNotice2');
+    importNotice2.style.display = !hasData && isOnOwnerNote ? 'block' : 'none';
+
+    document.getElementById('addressListWrapper').style.display =
+      hasData ? 'block' : 'none';
 
     renderUserList();
   });

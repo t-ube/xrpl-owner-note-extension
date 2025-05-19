@@ -46,5 +46,17 @@
   },
   "import_success": {
     "message": "Imported owner list successfully!"
+  },
+  "toggle_replace_label": {
+    "message": "Replace addresses with names"
+  },
+  "replace_notice_owner_note": {
+    "message": "Replacement is not performed on this page."
+  },
+  "import_required_notice": {
+    "message": "Please open Owner Note and import your owner list."
+  },
+  "import_required_notice2": {
+    "message": "Please import your owner list."
   }
 }

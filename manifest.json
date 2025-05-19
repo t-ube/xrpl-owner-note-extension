@@ -28,25 +28,8 @@
       "run_at": "document_idle"
     },
     {
-      "matches": [
-        "https://artdept.fun/*",
-        "https://bidds.com/*",
-        "https://bithomp.com/*",
-        "https://livenet.xrpl.org/*",
-        "https://sologenic.org/*",
-        "https://xmart.art/*",
-        "https://xpmarket.com/*",
-        "https://xrp.cafe/*",
-        "https://xrplwin.com/*",
-        "https://xrpnft.com/*",
-        "https://xrpscan.com/*"
-      ],
-      "js": ["loader-cafe.js"],
-      "run_at": "document_idle"
-    },
-    {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "js": ["content.js", "loader-cafe.js"],
       "run_at": "document_idle"
     }
   ],
