@@ -2,7 +2,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   loadUserMap();
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const toggle = document.getElementById('toggleReplaceSwitch');
   const importBtn = document.getElementById('importFromOwnerNote');
+
+  chrome.tabs.sendMessage(tab.id, { type: 'GET_REPLACE_STATE' }, (response) => {
+    if (chrome.runtime.lastError) {
+      console.warn("Could not get replace state:", chrome.runtime.lastError.message);
+      return;
+    }
+    toggle.checked = !!response?.isReplaced;
+  });
 
   if (tab?.url?.includes("owner-note.shirome.net")) {
     importBtn.disabled = false;
@@ -81,6 +90,19 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
 
 document.getElementById('openOwnerNote').addEventListener('click', () => {
   chrome.tabs.create({ url: "https://owner-note.shirome.net/" });
+});
+
+document.getElementById('toggleReplaceSwitch').addEventListener('change', async (e) => {
+  const isChecked = e.target.checked;
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.tabs.sendMessage(tab.id, { type: 'TOGGLE_REPLACE', enable: isChecked });
+
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    func: () => {
+      window.postMessage({ type: 'TOGGLE_REPLACE_UPDATED' }, '*');
+    }
+  });
 });
 
 function showCopiedMessage(targetElement) {

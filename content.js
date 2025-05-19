@@ -1,3 +1,48 @@
+console.log("[OwnerNote] content.js loaded");
+
+let __ownerNoteIsReplaced = false;
+
+chrome.storage.local.get('replaceState', (result) => {
+  __ownerNoteIsReplaced = result.replaceState ?? true;
+});
+
+function restoreOriginalAddresses() {
+  document.querySelectorAll('[data-original-text]').forEach(span => {
+    const original = span.getAttribute('data-original-text');
+    if (original) {
+      span.textContent = original;
+    }
+  });
+}
+
+function replaceAddressesWithNames() {
+  document.querySelectorAll('[data-original-text]').forEach(span => {
+    const name = span.getAttribute('data-name');
+    if (name) {
+      span.textContent = name;
+    }
+  });
+}
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'TOGGLE_REPLACE') {
+    __ownerNoteIsReplaced = message.enable;
+    chrome.storage.local.set({ replaceState: __ownerNoteIsReplaced });
+    if (__ownerNoteIsReplaced) {
+      replaceAddressesWithNames();
+    } else {
+      restoreOriginalAddresses();
+    }
+    sendResponse({ success: true });
+    return true;
+  }
+
+  if (message.type === 'GET_REPLACE_STATE') {
+    sendResponse({ isReplaced: __ownerNoteIsReplaced });
+    return true;
+  }
+});
+
 window.addEventListener('message', async (event) => {
   if (event.source !== window || !event.data?.type) return;
 
@@ -36,6 +81,18 @@ window.addEventListener('message', async (event) => {
           {
             type: 'RESPONSE_USER_MAP',
             addressMap: result.userMap || {}
+          },
+          '*'
+        );
+      });
+      break;
+
+    case 'REQUEST_REPLACE_STATE':
+      chrome.storage.local.get('replaceState', (result) => {
+        window.postMessage(
+          {
+            type: 'RESPONSE_REPLACE_STATE',
+            enabled: result.replaceState ?? true
           },
           '*'
         );

@@ -14,6 +14,19 @@ if (!window.__ownerNoteInjected__) {
     });
   }
 
+  function getReplaceState() {
+    return new Promise((resolve) => {
+      window.addEventListener('message', function handler(event) {
+        if (event.data?.type === 'RESPONSE_REPLACE_STATE') {
+          window.removeEventListener('message', handler);
+          resolve(event.data.enabled);
+        }
+      });
+  
+      window.postMessage({ type: 'REQUEST_REPLACE_STATE' }, '*');
+    });
+  }
+
   let hoverTimeout;
 
   function showHoverCard(user, address, x, y) {
@@ -139,9 +152,8 @@ if (!window.__ownerNoteInjected__) {
 
   (async () => {
     const userMap = await getUserMap();
-
     if (!Object.keys(userMap).length) return;
-
+  
     const addressToUser = {};
     for (const userId in userMap) {
       const user = userMap[userId];
@@ -152,142 +164,126 @@ if (!window.__ownerNoteInjected__) {
         };
       }
     }
-
-    if (!Object.keys(addressToUser).length) {
-      return;
-    }
-
-    // テキストノードを走査して置き換え
-    function replaceAddressesInTextNodes(addressToUser, root = document.body) {
+    if (!Object.keys(addressToUser).length) return;
+  
+    function replaceAddressesInTextNodes(root = document.body) {
       const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
       const xrplAddressRegex = /\br[1-9A-HJ-NP-Za-km-z]{25,35}\b/g;
-    
       const nodesToReplace = [];
-    
+  
       while (walker.nextNode()) {
         const node = walker.currentNode;
         const parent = node.parentNode;
-    
         if (!node.nodeValue.match(xrplAddressRegex)) continue;
         if (!parent) continue;
-    
-        // 再帰防止: 既にラップされた span の中は処理しない
         if (parent.nodeType === Node.ELEMENT_NODE && parent.hasAttribute('data-xrpl-address')) continue;
-    
-        const parentTag = parent.nodeName.toLowerCase();
-        if (['script', 'style', 'textarea'].includes(parentTag)) continue;
-    
+        if (["script", "style", "textarea", "a"].includes(parent.nodeName.toLowerCase())) continue;
         nodesToReplace.push(node);
       }
-    
+  
       nodesToReplace.forEach(node => {
         const parent = node.parentNode;
         if (!parent) return;
-    
         const frag = document.createDocumentFragment();
         const parts = node.nodeValue.split(xrplAddressRegex);
         const matches = [...node.nodeValue.matchAll(xrplAddressRegex)];
-    
+  
         for (let i = 0; i < parts.length; i++) {
           frag.appendChild(document.createTextNode(parts[i]));
-    
           const match = matches[i];
           if (match) {
             const address = match[0];
             const user = addressToUser[address];
-    
             const span = document.createElement('span');
-            span.textContent = user?.name || address;
-            span.setAttribute('data-xrpl-address', address); // 再帰防止マーク
+            span.textContent = address; // 初期表示はアドレス
+            span.setAttribute('data-xrpl-address', address);
+            span.setAttribute('data-original-address', address);
+            span.setAttribute('data-name', user?.name || address);
+            span.setAttribute('data-original-text', address);
             span.style.textDecoration = 'underline dotted';
             span.style.cursor = 'pointer';
-    
-            span.addEventListener('mouseenter', (e) => {
-              if (!e || !e.clientX || !e.clientY) return;
-              showHoverCard(user, address, e.clientX, e.clientY);
-            });
-    
+            span.addEventListener('mouseenter', e => showHoverCard(user, address, e.clientX, e.clientY));
             span.addEventListener('mouseleave', () => {
               hoverTimeout = setTimeout(hideHoverCard, 100);
             });
-    
             frag.appendChild(span);
           }
         }
-    
         parent.replaceChild(frag, node);
       });
     }
-
-    function replaceAddressLinksWithUserInfo(addressToUser, root = document.body) {
+  
+    function replaceAddressLinksWithUserInfo(root = document.body) {
       const profileLinkRegex = /\/(user|profile|account|accounts)\/(r[1-9A-HJ-NP-Za-km-z]{25,35})(\/|$)/;
       const links = root.querySelectorAll('a');
-    
       links.forEach(link => {
+        if (link.querySelector('[data-xrpl-address]')) return;
         const match = link.href?.match(profileLinkRegex);
         if (!match) return;
-    
         const address = match[2];
         if (!address || link.hasAttribute('data-xrpl-address')) return;
-    
         const user = addressToUser[address];
-    
-        // 処理済みマークを付与
-        link.setAttribute('data-xrpl-address', address);
-    
-        // 表示名は user.name / user.xAccount があれば差し替え、なければアドレスのまま
         const displayName = user?.name || address;
-    
-        // 既存の中身を span に差し替える（内部的にはアドレス文字列を削除）
+        const originalText = link.textContent.trim();
         link.innerHTML = '';
-    
         const span = document.createElement('span');
-        span.textContent = displayName;
+        span.textContent = address; // 初期表示はアドレス
         span.style.textDecoration = 'underline dotted';
         span.style.cursor = 'pointer';
         span.setAttribute('data-xrpl-address', address);
-    
-        span.addEventListener('mouseenter', (e) => {
-          if (!e || !e.clientX || !e.clientY) return;
-          showHoverCard(user, address, e.clientX, e.clientY);
-        });
-    
+        span.setAttribute('data-original-address', address);
+        span.setAttribute('data-name', displayName);
+        span.setAttribute('data-original-text', originalText);
+        span.addEventListener('mouseenter', e => showHoverCard(user, address, e.clientX, e.clientY));
         span.addEventListener('mouseleave', () => {
           hoverTimeout = setTimeout(hideHoverCard, 100);
         });
-    
         link.appendChild(span);
       });
     }
-
-    replaceAddressesInTextNodes(addressToUser);
-    replaceAddressLinksWithUserInfo(addressToUser);
-
-    setTimeout(() => {
-      replaceAddressesInTextNodes(addressToUser);
-      replaceAddressLinksWithUserInfo(addressToUser);
-    }, 300);
-
-    if (window.__addressObserver__) {
-      window.__addressObserver__.disconnect();
+  
+    function applyReplaceState(enabled) {
+      const spans = document.querySelectorAll('[data-xrpl-address]');
+      spans.forEach(span => {
+        const text = enabled
+          ? span.getAttribute('data-name')
+          : span.getAttribute('data-original-text');
+        if (text) span.textContent = text;
+      });
     }
-    
-    const observer = new MutationObserver((mutationsList) => {
+  
+    replaceAddressesInTextNodes();
+    replaceAddressLinksWithUserInfo();
+  
+    getReplaceState().then(enabled => {
+      applyReplaceState(enabled);
+    });
+  
+    window.addEventListener('message', async (event) => {
+      if (event.source !== window || event.data?.type !== 'TOGGLE_REPLACE_UPDATED') return;
+      const isReplaced = await getReplaceState();
+      applyReplaceState(isReplaced);
+    });
+  
+    if (window.__addressObserver__) window.__addressObserver__.disconnect();
+  
+    const observer = new MutationObserver(mutationsList => {
       for (const mutation of mutationsList) {
         for (const node of mutation.addedNodes) {
           if (node.nodeType === Node.ELEMENT_NODE && !node.closest('[data-xrpl-address]')) {
-            replaceAddressesInTextNodes(addressToUser, node);
-            replaceAddressLinksWithUserInfo(addressToUser, node);
+            replaceAddressesInTextNodes(node);
+            replaceAddressLinksWithUserInfo(node);
+            getReplaceState().then(enabled => applyReplaceState(enabled));
           }
         }
       }
     });
-    
+  
     observer.observe(document.body, {
       childList: true,
       subtree: true
     });
-    
+  
     window.__addressObserver__ = observer;
   })();
 }
