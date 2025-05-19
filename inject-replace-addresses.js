@@ -237,21 +237,34 @@
           const originalText = link.textContent.trim();
           const originalHTML = link.outerHTML;
           if (user?.name) {
-            const span = document.createElement('span');
-            span.textContent = displayName;
-            span.style.textDecoration = 'underline dotted';
-            span.style.cursor = 'pointer';
-            span.setAttribute('data-xrpl-address', address);
-            span.setAttribute('data-original-address', address);
-            span.setAttribute('data-name', displayName);
-            span.setAttribute('data-original-text', originalText);
-            span.setAttribute('data-xrpl-original-link', 'true');
-            span.setAttribute('data-original-content', originalHTML);
-            span.addEventListener('mouseenter', e => showHoverCard(user, address, e.clientX, e.clientY));
-            span.addEventListener('mouseleave', () => {
+            const a = document.createElement('a');
+            a.textContent = displayName;
+            a.href = link.href;
+
+            const target = link.getAttribute('target');
+            if (target) {
+              a.setAttribute('target', target);
+              if (target === '_blank') {
+                a.setAttribute('rel', 'noopener noreferrer');
+              } else {
+                const rel = link.getAttribute('rel');
+                if (rel) a.setAttribute('rel', rel);
+              }
+            }
+            
+            a.style.textDecoration = 'underline dotted';
+            a.style.cursor = 'pointer';
+            a.setAttribute('data-xrpl-address', address);
+            a.setAttribute('data-original-address', address);
+            a.setAttribute('data-name', displayName);
+            a.setAttribute('data-original-text', originalText);
+            a.setAttribute('data-xrpl-original-link', 'true');
+            a.setAttribute('data-original-content', originalHTML);
+            a.addEventListener('mouseenter', e => showHoverCard(user, address, e.clientX, e.clientY));
+            a.addEventListener('mouseleave', () => {
               hoverTimeout = setTimeout(hideHoverCard, 100);
             });
-            link.replaceWith(span);
+            link.replaceWith(a);
           } else {
             link.style.textDecoration = 'underline dotted';
             link.style.cursor = 'pointer';
