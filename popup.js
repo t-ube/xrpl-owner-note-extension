@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const importBtn = document.getElementById('importFromOwnerNote');
   const notice = document.getElementById('pageNotice');
 
-  const isOwnerNote = tab?.url?.includes("owner-note.shirome.net");
+  const isOwnerNote = tab?.url?.includes("owner-note.shirome.net") || tab?.url?.includes("nft-owner-note.pages.dev");
 
   if (isOwnerNote) {
     openBtn.disabled = true;
@@ -42,7 +42,7 @@ document.querySelectorAll('[data-placeholder]').forEach(el => {
 document.getElementById('importFromOwnerNote').addEventListener('click', async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
-  if (tab.url.includes("owner-note.shirome.net")) {
+  if (tab.url.includes("owner-note.shirome.net") || tab.url.includes("nft-owner-note.pages.dev")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       files: ["inject-collect-owner-note-data.js"]

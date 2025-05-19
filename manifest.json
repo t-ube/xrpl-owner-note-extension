@@ -3,6 +3,9 @@
   "name": "Owner Note",
   "version": "1.0",
   "description": "Automatically replaces XRPL wallet addresses on supported sites with names from your imported list.",
+  "background": {
+    "service_worker": "background.js"
+  },
   "permissions": [
     "activeTab",
     "scripting",
@@ -23,7 +26,9 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://owner-note.shirome.net/"],
+      "matches": ["https://owner-note.shirome.net/",
+                  "https://896a98f5.nft-owner-note.pages.dev/*"
+                ],
       "js": ["loader-owner-note.js"],
       "run_at": "document_idle"
     },
