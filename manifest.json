@@ -26,13 +26,25 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": [
+        "https://artdept.fun/*",
+        "https://bidds.com/*",
+        "https://bithomp.com/*",
+        "https://livenet.xrpl.org/*",
+        "https://sologenic.org/*",
+        "https://xmart.art/*",
+        "https://xpmarket.com/*",
+        "https://xrp.cafe/*",
+        "https://xrplwin.com/*",
+        "https://xrpnft.com/*",
+        "https://xrpscan.com/*"
+      ],
       "js": ["content.js", "loader-cafe.js"],
       "run_at": "document_idle"
     },
     {
       "matches": ["https://owner-note.shirome.net/*"],
-      "js": ["loader-owner-note.js"],
+      "js": ["content.js", "loader-owner-note.js"],
       "run_at": "document_idle"
     }
   ],
@@ -40,9 +52,31 @@
     {
       "resources": [
         "loader-owner-note.js",
+        "inject-collect-owner-note-data.js"
+      ],
+      "matches": ["https://owner-note.shirome.net/*"]
+    },
+    {
+      "resources": [
         "loader-cafe.js",
-        "inject-collect-owner-note-data.js",
-        "inject-replace-addresses.js",
+        "inject-replace-addresses.js"
+      ],
+      "matches": [
+        "https://artdept.fun/*",
+        "https://bidds.com/*",
+        "https://bithomp.com/*",
+        "https://livenet.xrpl.org/*",
+        "https://sologenic.org/*",
+        "https://xmart.art/*",
+        "https://xpmarket.com/*",
+        "https://xrp.cafe/*",
+        "https://xrplwin.com/*",
+        "https://xrpnft.com/*",
+        "https://xrpscan.com/*"
+      ]
+    },
+    {
+      "resources": [
         "icons/icon16.png",
         "icons/icon48.png",
         "icons/icon128.png",
