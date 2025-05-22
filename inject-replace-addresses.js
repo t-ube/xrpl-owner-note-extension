@@ -59,7 +59,7 @@
       const xAccount = user?.xAccount || '-';
   
       const dualSVG = (value) => `
-        <span class="copy-container" style="display:inline-block;margin-left:6px;">
+        <span class="copy-container" style="display:inline-flex;align-items:center;margin-left:6px;gap:4px;">
           <svg class="copy-btn" data-copy="${value}" xmlns="http://www.w3.org/2000/svg"
               width="16" height="16" viewBox="0 0 24 24" fill="none"
               stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -98,8 +98,9 @@
         <div style="font-size:14px;color:#000;margin-bottom:6px;">
           <strong>${name}</strong>${user?.name ? dualSVG(name + ' ') : ''}
         </div>
-        <div style="font-size:14px;color:#000;margin-bottom:6px;">
-          @${xAccount}${user?.xAccount ? dualSVG('@' + xAccount + ' ') : ''}
+        <div style="font-size:14px; color:#000; margin-bottom:6px; display:flex; align-items:center; white-space: nowrap;">
+          <span>@${xAccount}</span>
+          ${user?.xAccount ? dualSVG('@' + xAccount + ' ') : ''}
           ${user?.xAccount ? 
             `<a href="https://x.com/${xAccount}" target="_blank" rel="noopener noreferrer"
               style="margin-left:6px;vertical-align:middle;">
@@ -111,8 +112,9 @@
             ``
           }
         </div>
-        <div data-xrpl-address style="font-size:12px;color:#555; word-break:break-all; line-height:1.4;">
-          ${address}${dualSVG(address)}
+        <div style="font-size:12px;color:#555; display:flex; align-items:center; white-space: nowrap; line-height:1.4;">
+          <span data-xrpl-address>${address}</span>
+          ${dualSVG(address)}
           <a href="https://x.com/search?q=${encodeURIComponent(address)}" target="_blank" rel="noopener noreferrer"
             style="margin-left:6px;vertical-align:middle;">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 1200 1227"
