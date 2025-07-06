@@ -226,7 +226,7 @@
       }
     
       function replaceAddressLinksWithUserInfo(root = document.body) {
-        const profileLinkRegex = /\/(user|profile|account|accounts|explorer)\/(r[1-9A-HJ-NP-Za-km-z]{25,35})(\/|$)/;
+        const profileLinkRegex = /\/(user|profile|account|accounts|explorer|nfts)\/(r[1-9A-HJ-NP-Za-km-z]{25,35})(\/|$)/;
         const xrplAddressRegex = /^r[1-9A-HJ-NP-Za-km-z]{25,35}$/;
         const links = root.querySelectorAll('a');
         links.forEach(link => {
