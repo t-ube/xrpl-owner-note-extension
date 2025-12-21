@@ -1,5 +1,5 @@
 (async () => {
-  const request = indexedDB.open('OwnerNoteDB', 1);
+  const request = indexedDB.open('OwnerNoteDB');
 
   request.onsuccess = () => {
     const db = request.result;
