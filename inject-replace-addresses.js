@@ -238,13 +238,16 @@
           const hasComplexContent = [...link.childNodes].some(n => n.nodeType !== Node.TEXT_NODE);
           
           let address = null;
+          let addressFromHref = false;
           const match = link.href?.match(profileLinkRegex);
           if (match) {
             address = match[2];
+            addressFromHref = true;
           } else {
             const bithompMatch = link.href?.match(bithompLinkRegex);
             if (bithompMatch) {
               address = bithompMatch[1];
+              addressFromHref = true;
             }
           }
           if (!address && xrplAddressRegex.test(linkText)) {
@@ -261,7 +264,7 @@
             hasAddressFragment = parts.some(part =>
               part.startsWith('r') && (
                 part.length >= 5 ||
-                part.includes('...')
+                /(\.{2,}|…)/.test(part)
               )
             );
             if (!hasAddressFragment) return;
@@ -271,12 +274,13 @@
           const originalText = link.textContent.trim();
           const originalHTML = link.outerHTML;
 
-          const isEllipsis = originalText.startsWith('r') && originalText.includes('...');
-          const isLikelyAddressDisplay = 
-            linkText === address || 
-            linkText === displayName || 
+          const isEllipsis = originalText.startsWith('r') && /(\.{2,}|…)/.test(originalText);
+          const isLikelyAddressDisplay =
+            linkText === address ||
+            linkText === displayName ||
             hasAddressFragment ||
-            (isEllipsis && displayName !== originalText);
+            (isEllipsis && displayName !== originalText) ||
+            (addressFromHref && !!user?.name);
           if (!isLikelyAddressDisplay) return;
 
           if (user?.name) {
