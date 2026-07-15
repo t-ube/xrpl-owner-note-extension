@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Owner Note",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Automatically replaces XRPL wallet addresses on supported sites with names from your imported list.",
   "background": {
     "service_worker": "background.js"
@@ -37,7 +37,8 @@
         "https://xrp.cafe/*",
         "https://xrplwin.com/*",
         "https://xrpnft.com/*",
-        "https://xrpscan.com/*"
+        "https://xrpscan.com/*",
+        "https://firstledger.net/*"
       ],
       "js": ["content.js", "loader-cafe.js"],
       "run_at": "document_idle"
@@ -72,7 +73,8 @@
         "https://xrp.cafe/*",
         "https://xrplwin.com/*",
         "https://xrpnft.com/*",
-        "https://xrpscan.com/*"
+        "https://xrpscan.com/*",
+        "https://firstledger.net/*"
       ]
     },
     {
